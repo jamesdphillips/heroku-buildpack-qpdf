@@ -15,8 +15,8 @@ echo "Downloading binaries" | indent
 cd $BUILD_DIR
 mkdir -p $VENDOR_DIR
 cd $VENDOR_DIR
-wget $DOWNLOAD_BASE_PATH/$LIB_DPKG
-wget $DOWNLOAD_BASE_PATH/$BIN_DPKG
+wget --quiet $DOWNLOAD_BASE_PATH/$LIB_DPKG
+wget --quiet $DOWNLOAD_BASE_PATH/$BIN_DPKG
 
 echo "Downloading binaries" | indent
 dpkg -x ./$LIB_DPKG .
