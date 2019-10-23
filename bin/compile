@@ -4,28 +4,20 @@ indent() {
   sed -u 's/^/       /'
 }
 
-echo "--------> Install qpdf"
+VERSION=9.0.2
 BUILD_DIR=$1
-VENDOR_DIR="vendor/qpdf"
-DOWNLOAD_BASE_PATH="https://s3-eu-west-1.amazonaws.com/myfuturenow-public/qpdf"
-LIB_DPKG=libqpdf21_8.4.0-2_amd64.deb
-BIN_DPKG=qpdf_8.4.0-2_amd64.deb
 
+echo "--------> Install qpdf v$VERSION"
 echo "Downloading binaries" | indent
 cd $BUILD_DIR
-mkdir -p $VENDOR_DIR
-cd $VENDOR_DIR
-wget --quiet $DOWNLOAD_BASE_PATH/$LIB_DPKG
-wget --quiet $DOWNLOAD_BASE_PATH/$BIN_DPKG
+wget --quiet "https://github.com/qpdf/qpdf/releases/download/release-qpdf-$VERSION/qpdf-$VERSION-x86_64.AppImage"
 
-echo "Downloading binaries" | indent
-dpkg -x ./$LIB_DPKG .
-dpkg -x ./$BIN_DPKG .
-mv usr/* .
-rm -r usr *.deb
+echo "Installing binaries" | indent
+chmod a+x qpdf-$VERSION-x86_64.AppImage
+./qpdf-9.0.2-x86_64.AppImage --appimage-extract
 
-echo "exporting PATH and LD_LIBRARY_PATH" | indent
-PROFILE_PATH="$BUILD_DIR/.profile.d/qpdf.sh"
-mkdir -p $(dirname $PROFILE_PATH)
-echo 'export PATH="/app/vendor/qpdf/bin:$PATH"' >> $PROFILE_PATH
-echo 'export LD_LIBRARY_PATH="/app/vendor/qpdf/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"' >> $PROFILE_PATH
+cp squashfs-root/usr/bin/* /usr/local/bin/
+cp squashfs-root/usr/lib/* /usr/local/lib/
+rm -rf qpdf-*.AppImage squashfs-root
+
+echo "-------> Install qpdf complete"
